@@ -1,7 +1,4 @@
 
-  # Library Management System
-
-  This is a code bundle for Library Management System. The original project is available at https://www.figma.com/design/xmBw4EEBCYFpPiMEfdofLp/Library-Management-System.
 
   ## Running the code
 
