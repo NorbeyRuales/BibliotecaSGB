@@ -28,3 +28,29 @@ pnpm-debug.log*
 # Sistema operativo
 .DS_Store
 Thumbs.db
+
+# Documentos de análisis y diagramas (locales)
+ANALISIS_PROYECTO.json
+ANALISIS_PROYECTO.md
+ANALISIS_UML.html
+CHEAT_SHEET.md
+DIAGRAMA_ACTIVIDADES.html
+DIAGRAMA_ACTIVIDADES.pdf
+DIAGRAMA_ACTIVIDADES_COMPLETO.html
+DIAGRAMA_ACTIVIDADES_COMPLETO.pdf
+DIAGRAMA_ACTIVIDADES_GENERAL.html
+DIAGRAMA_ACTIVIDADES_GENERAL.pdf
+DIAGRAMA_ACTIVIDADES_MEDIO.html
+DIAGRAMA_ACTIVIDADES_MEDIO.pdf
+DIAGRAMA_UML_COMPARATIVO.txt
+GUIA_PRESENTACION.md
+README_ANALISIS.md
+UML*.pdf
+UML_COMPARACION.md
+
+# Scripts de conversión (locales)
+convert-completo-to-pdf.js
+convert-diagram-to-pdf.js
+convert-general-to-pdf.js
+convert-medio-to-pdf.js
+convert_diagrama_to_pdf.py
