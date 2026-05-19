@@ -27,5 +27,5 @@ WHERE table_name = 'kv_store_bebfd31a';
 
 -- ============================================================================
 -- NOTA: Ejecuta este SQL en Supabase SQL Editor
--- URL: https://supabase.com/dashboard/project/lpspwvwgqiqrendjksqy/sql
+-- URL: https://supabase.com/dashboard/project/ffkxmdgwdzvwanrocshn/sql
 -- ============================================================================

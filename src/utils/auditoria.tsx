@@ -7,7 +7,7 @@
  * Registra todas las acciones administrativas en la base de datos
  */
 
-import { projectId, publicAnonKey } from './supabase/info';
+import { supabaseConfig } from './supabase/config';
 
 /**
  * Tipo de datos para un log de auditoría
@@ -76,12 +76,12 @@ export async function registrarLog(
 ): Promise<{ success: boolean; log?: LogAuditoria; error?: string }> {
   try {
     const response = await fetch(
-      `https://${projectId}.supabase.co/functions/v1/make-server-bebfd31a/logs-auditoria/registrar`,
+      `${supabaseConfig.functionsUrl}/logs-auditoria/registrar`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${publicAnonKey}`,
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({
           usuario_id: params.usuarioId,
@@ -105,7 +105,7 @@ export async function registrarLog(
     const data = await response.json();
     
     // Solo mostrar en modo debug
-    if (process.env.NODE_ENV === 'development') {
+    if (import.meta.env.DEV) {
       console.log('✅ Log registrado:', data.log);
     }
 
@@ -143,11 +143,11 @@ export async function listarLogs(
     if (params.fechaFin) queryParams.append('fechaFin', params.fechaFin);
 
     const response = await fetch(
-      `https://${projectId}.supabase.co/functions/v1/make-server-bebfd31a/logs-auditoria/listar?${queryParams}`,
+      `${supabaseConfig.functionsUrl}/logs-auditoria/listar?${queryParams}`,
       {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${publicAnonKey}`,
+          'Authorization': `Bearer ${token}`,
         },
       }
     );
@@ -201,11 +201,11 @@ export async function obtenerEstadisticasLogs(
     if (fechaFin) queryParams.append('fechaFin', fechaFin);
 
     const response = await fetch(
-      `https://${projectId}.supabase.co/functions/v1/make-server-bebfd31a/logs-auditoria/estadisticas?${queryParams}`,
+      `${supabaseConfig.functionsUrl}/logs-auditoria/estadisticas?${queryParams}`,
       {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${publicAnonKey}`,
+          'Authorization': `Bearer ${token}`,
         },
       }
     );

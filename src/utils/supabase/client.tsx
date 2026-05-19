@@ -11,8 +11,8 @@
 // Importar la función para crear cliente de Supabase
 import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 
-// Importar credenciales del proyecto desde archivo de configuración
-import { projectId, publicAnonKey } from './info';
+// Importar configuración del proyecto
+import { supabaseConfig } from './config';
 
 /**
  * Variable que mantiene la única instancia del cliente de Supabase
@@ -36,10 +36,8 @@ export const createClient = () => {
   if (!supabaseClient) {
     // No existe - crear nueva instancia
     supabaseClient = createSupabaseClient(
-      // URL del proyecto Supabase
-      `https://${projectId}.supabase.co`,
-      // Clave pública anónima (permite acceso a funciones públicas)
-      publicAnonKey
+      supabaseConfig.supabaseUrl,
+      supabaseConfig.supabaseAnonKey
     );
   }
   

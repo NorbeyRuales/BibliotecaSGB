@@ -7,7 +7,7 @@
 -- 
 -- INSTRUCCIONES:
 -- Ejecuta este script en el SQL Editor de Supabase:
--- https://supabase.com/dashboard/project/lpspwvwgqiqrendjksqy/sql/new
+-- https://supabase.com/dashboard/project/ffkxmdgwdzvwanrocshn/sql/new
 -- ============================================================================
 
 -- ============================================================================
@@ -68,45 +68,51 @@ SELECT 'Tabla kv_store_bebfd31a creada correctamente' AS status;
 -- ============================================================================
 -- Tabla para registrar todas las acciones realizadas en el sistema
 -- Útil para auditoría, seguridad y análisis de usabilidad
-CREATE TABLE IF NOT EXISTS logs_auditoria_bebfd31a (
-  id BIGSERIAL PRIMARY KEY,                    -- ID auto-incremental
-  timestamp TIMESTAMPTZ DEFAULT NOW(),         -- Fecha y hora del evento
-  usuario_id TEXT NOT NULL,                    -- ID del usuario que ejecuta la acción
-  usuario_nombre TEXT NOT NULL,                -- Nombre completo del usuario
-  usuario_role TEXT NOT NULL,                  -- Rol del usuario (admin/cliente)
-  accion TEXT NOT NULL,                        -- Tipo de acción (CREAR, EDITAR, ELIMINAR, etc.)
-  modulo TEXT NOT NULL,                        -- Módulo afectado (USUARIOS, LIBROS, PRÉSTAMOS, etc.)
-  entidad_id TEXT,                             -- ID de la entidad afectada
-  detalles JSONB,                              -- Información adicional en formato JSON
-  ip_address TEXT,                             -- Dirección IP del usuario (opcional)
-  user_agent TEXT                              -- Navegador/dispositivo del usuario (opcional)
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+CREATE TABLE IF NOT EXISTS logs_auditoria (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  usuario_id VARCHAR(255) NOT NULL,
+  usuario_nombre VARCHAR(255) NOT NULL,
+  usuario_email VARCHAR(255),
+  accion VARCHAR(50) NOT NULL,
+  modulo VARCHAR(50) NOT NULL,
+  entidad_id VARCHAR(255),
+  detalles JSONB,
+  ip_address VARCHAR(100),
+  user_agent TEXT,
+  fecha TIMESTAMPTZ DEFAULT NOW(),
+  created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- Crear índices para mejorar el rendimiento de las consultas
-CREATE INDEX IF NOT EXISTS idx_logs_timestamp ON logs_auditoria_bebfd31a(timestamp DESC);
-CREATE INDEX IF NOT EXISTS idx_logs_usuario ON logs_auditoria_bebfd31a(usuario_id);
-CREATE INDEX IF NOT EXISTS idx_logs_modulo ON logs_auditoria_bebfd31a(modulo);
-CREATE INDEX IF NOT EXISTS idx_logs_accion ON logs_auditoria_bebfd31a(accion);
+CREATE INDEX IF NOT EXISTS idx_logs_auditoria_usuario_id ON logs_auditoria(usuario_id);
+CREATE INDEX IF NOT EXISTS idx_logs_auditoria_accion ON logs_auditoria(accion);
+CREATE INDEX IF NOT EXISTS idx_logs_auditoria_modulo ON logs_auditoria(modulo);
+CREATE INDEX IF NOT EXISTS idx_logs_auditoria_fecha ON logs_auditoria(fecha DESC);
+CREATE INDEX IF NOT EXISTS idx_logs_auditoria_entidad_id ON logs_auditoria(entidad_id);
+CREATE INDEX IF NOT EXISTS idx_logs_auditoria_created_at ON logs_auditoria(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_logs_auditoria_modulo_accion_fecha
+  ON logs_auditoria(modulo, accion, fecha DESC);
 
 -- Habilitar RLS para la tabla de logs
-ALTER TABLE logs_auditoria_bebfd31a ENABLE ROW LEVEL SECURITY;
+ALTER TABLE logs_auditoria ENABLE ROW LEVEL SECURITY;
 
 -- Política para service_role (backend)
-DROP POLICY IF EXISTS "Allow all for service role logs" ON logs_auditoria_bebfd31a;
-CREATE POLICY "Allow all for service role logs"
-ON logs_auditoria_bebfd31a
-FOR ALL
-TO service_role
-USING (true)
-WITH CHECK (true);
-
--- Política para usuarios autenticados (solo lectura)
-DROP POLICY IF EXISTS "Allow read for authenticated users logs" ON logs_auditoria_bebfd31a;
-CREATE POLICY "Allow read for authenticated users logs"
-ON logs_auditoria_bebfd31a
+DROP POLICY IF EXISTS "Usuarios autenticados pueden leer logs" ON logs_auditoria;
+CREATE POLICY "Usuarios autenticados pueden leer logs"
+ON logs_auditoria
 FOR SELECT
 TO authenticated
 USING (true);
+
+-- Política para inserción desde la función
+DROP POLICY IF EXISTS "Sistema puede insertar logs" ON logs_auditoria;
+CREATE POLICY "Sistema puede insertar logs"
+ON logs_auditoria
+FOR INSERT
+TO authenticated
+WITH CHECK (true);
 
 -- ============================================================================
 -- PASO 7 (OPCIONAL): LISTAR TODAS LAS TABLAS

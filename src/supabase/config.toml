@@ -1,5 +1,5 @@
 # Configuración del proyecto Supabase
-project_id = "lpspwvwgqiqrendjksqy"
+project_id = "ffkxmdgwdzvwanrocshn"
 
 [functions.make-server-bebfd31a]
 verify_jwt = false

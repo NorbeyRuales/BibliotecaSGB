@@ -8,14 +8,14 @@
  * ============================================================================
  */
 
-// Importar credenciales del proyecto Supabase
-import { projectId, publicAnonKey } from './supabase/info';
+// Importar configuración del proyecto Supabase
+import { supabaseConfig } from './supabase/config';
 
 /**
  * URL base de las Edge Functions
  * Formato: https://[project-id].supabase.co/functions/v1/[function-name]
  */
-const API_URL = `https://${projectId}.supabase.co/functions/v1/make-server-bebfd31a`;
+const API_URL = supabaseConfig.functionsUrl;
 
 /**
  * APICLIENT - Objeto que contiene todos los métodos para llamar al backend
@@ -37,7 +37,7 @@ export const apiClient = {
       method: 'POST',                          // Método HTTP
       headers: {
         'Content-Type': 'application/json',    // Indicar que enviamos JSON
-        'Authorization': `Bearer ${publicAnonKey}` // Autenticación con clave pública
+        'Authorization': `Bearer ${supabaseConfig.supabaseAnonKey}` // Autenticación con clave pública
       }
     });
     return response.json();  // Parsear respuesta JSON
@@ -58,7 +58,7 @@ export const apiClient = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${publicAnonKey}`
+        'Authorization': `Bearer ${supabaseConfig.supabaseAnonKey}`
       },
       body: JSON.stringify(data)  // Convertir objeto a JSON
     });
@@ -77,7 +77,7 @@ export const apiClient = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${publicAnonKey}`
+        'Authorization': `Bearer ${supabaseConfig.supabaseAnonKey}`
       },
       body: JSON.stringify({ email, password })
     });
@@ -698,7 +698,7 @@ export const apiClient = {
       const response = await fetch(url, {
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${publicAnonKey}`
+          'Authorization': `Bearer ${supabaseConfig.supabaseAnonKey}`
         }
       });
       

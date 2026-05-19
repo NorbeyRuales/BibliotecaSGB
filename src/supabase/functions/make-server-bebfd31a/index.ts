@@ -20,6 +20,7 @@ const supabase = createClient(
 
 registerRoutes(api, supabase, kv);
 
+// Supabase puede reenviar la ruta con o sin el slug de la función.
 app.route('/', api);
 app.route(FUNCTION_BASE_PATH, api);
 

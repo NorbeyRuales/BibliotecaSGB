@@ -52,12 +52,14 @@ COMMENT ON COLUMN logs_auditoria.fecha IS 'Fecha y hora de la acción';
 ALTER TABLE logs_auditoria ENABLE ROW LEVEL SECURITY;
 
 -- Política: Solo usuarios autenticados pueden leer logs
+DROP POLICY IF EXISTS "Usuarios autenticados pueden leer logs" ON logs_auditoria;
 CREATE POLICY "Usuarios autenticados pueden leer logs" ON logs_auditoria
   FOR SELECT
   TO authenticated
   USING (true);
 
 -- Política: Solo el sistema puede insertar logs (a través del service role)
+DROP POLICY IF EXISTS "Sistema puede insertar logs" ON logs_auditoria;
 CREATE POLICY "Sistema puede insertar logs" ON logs_auditoria
   FOR INSERT
   TO authenticated
