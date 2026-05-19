@@ -125,6 +125,15 @@ Build de produccion:
 npm run build
 ```
 
+## Variables de entorno (frontend)
+
+Para Vite/Vercel, usa variables con prefijo `VITE_`:
+
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_ANON_KEY`
+- `VITE_SUPABASE_FUNCTION_NAME` (opcional, default: `make-server-bebfd31a`)
+- `VITE_SUPABASE_FUNCTIONS_URL` (opcional, ejemplo local: `http://localhost:8787`)
+
 ## Configuracion de base de datos (Supabase)
 
 Para una instalacion limpia:

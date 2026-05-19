@@ -38,6 +38,38 @@ TO authenticated
 USING (true)
 WITH CHECK (true);
 
+-- 5. Crear tabla de logs de auditoría
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+CREATE TABLE IF NOT EXISTS logs_auditoria (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  usuario_id VARCHAR(255) NOT NULL,
+  usuario_nombre VARCHAR(255) NOT NULL,
+  usuario_email VARCHAR(255),
+  accion VARCHAR(50) NOT NULL,
+  modulo VARCHAR(50) NOT NULL,
+  entidad_id VARCHAR(255),
+  detalles JSONB,
+  ip_address VARCHAR(100),
+  user_agent TEXT,
+  fecha TIMESTAMPTZ DEFAULT NOW(),
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE logs_auditoria ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Usuarios autenticados pueden leer logs" ON logs_auditoria;
+CREATE POLICY "Usuarios autenticados pueden leer logs"
+ON logs_auditoria
+FOR SELECT TO authenticated
+USING (true);
+
+DROP POLICY IF EXISTS "Sistema puede insertar logs" ON logs_auditoria;
+CREATE POLICY "Sistema puede insertar logs"
+ON logs_auditoria
+FOR INSERT TO authenticated
+WITH CHECK (true);
+
 -- Verificar que todo está correcto
 SELECT 'Configuración completada exitosamente' AS status;`;
 
@@ -105,7 +137,7 @@ SELECT 'Configuración completada exitosamente' AS status;`;
               Abrir el SQL Editor de Supabase
             </h3>
             <Button
-              onClick={() => window.open('https://supabase.com/dashboard/project/lpspwvwgqiqrendjksqy/sql/new', '_blank')}
+              onClick={() => window.open('https://supabase.com/dashboard/project/ffkxmdgwdzvwanrocshn/sql/new', '_blank')}
               className="bg-green-600 hover:bg-green-700 text-white"
             >
               <ExternalLink className="h-4 w-4 mr-2" />

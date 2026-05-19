@@ -13,7 +13,7 @@
  * );
  * 
  * VISTA EN SUPABASE:
- * https://supabase.com/dashboard/project/lpspwvwgqiqrendjksqy/database/tables
+ * https://supabase.com/dashboard/project/ffkxmdgwdzvwanrocshn/database/tables
  * ============================================================================
  */
 

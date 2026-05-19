@@ -4,9 +4,10 @@ const { Client } = require('pg');
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SERVICE_ROLE = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const PROJECT_REF = process.env.SUPABASE_PROJECT_REF;
+const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
 
-if (!SUPABASE_URL || !SERVICE_ROLE || !PROJECT_REF) {
-  console.error('Faltan variables en .env (SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, SUPABASE_PROJECT_REF)');
+if (!SUPABASE_URL || !SERVICE_ROLE || !PROJECT_REF || !SUPABASE_ANON_KEY) {
+  console.error('Faltan variables en .env (SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, SUPABASE_PROJECT_REF, SUPABASE_ANON_KEY)');
   process.exit(1);
 }
 
@@ -39,13 +40,46 @@ async function createAuthUser() {
     body: JSON.stringify(body)
   });
 
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`Auth create failed: ${res.status} ${text}`);
+  if (res.ok) {
+    const data = await res.json();
+    return { data, created: true };
   }
 
-  const data = await res.json();
-  return data;
+  const text = await res.text();
+  if (res.status === 422 && text.includes('email_exists')) {
+    return { data: null, created: false, reason: 'email_exists' };
+  }
+
+  throw new Error(`Auth create failed: ${res.status} ${text}`);
+}
+
+function decodeJwtSub(token) {
+  try {
+    const payload = token.split('.')[1];
+    const normalized = payload.replace(/-/g, '+').replace(/_/g, '/');
+    const json = Buffer.from(normalized, 'base64').toString('utf8');
+    return JSON.parse(json).sub;
+  } catch (err) {
+    return null;
+  }
+}
+
+async function loginAndGetUserId() {
+  try {
+    const res = await fetch(`${SUPABASE_URL.replace(/\/$/, '')}/auth/v1/token?grant_type=password`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        apikey: SUPABASE_ANON_KEY
+      },
+      body: JSON.stringify({ email: adminEmail, password: adminPassword })
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data?.user?.id || (data?.access_token ? decodeJwtSub(data.access_token) : null);
+  } catch (err) {
+    return null;
+  }
 }
 
 async function upsertKV(client, key, valueObj) {
@@ -56,8 +90,16 @@ async function upsertKV(client, key, valueObj) {
 async function main() {
   try {
     console.log('Creando usuario admin en Auth...');
-    const auth = await createAuthUser();
-    const userId = auth.id || auth.user?.id || auth.user_id || auth;
+    const authResult = await createAuthUser();
+    let userId = authResult?.data?.id || authResult?.data?.user?.id || authResult?.data?.user_id || null;
+
+    if (!userId && authResult && authResult.created === false) {
+      userId = await loginAndGetUserId();
+    }
+
+    if (!userId) {
+      throw new Error('No se pudo obtener el ID del usuario admin. Verifica credenciales y estado en Auth.');
+    }
     console.log('Usuario creado:', userId);
 
     // Conectar a Postgres
