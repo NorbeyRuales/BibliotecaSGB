@@ -8,7 +8,7 @@
  * ============================================================================
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
@@ -16,7 +16,7 @@ import { Badge } from '../ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '../ui/dialog';
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '../ui/alert-dialog';
-import { Search, BookOpen, Lock, UserPlus, LogIn, Eye, AlertCircle, Library, Filter, BookMarked, Users, TrendingUp } from 'lucide-react';
+import { Search, BookOpen, Lock, UserPlus, LogIn, Eye, AlertCircle, Library, Filter, BookMarked, ChevronDown } from 'lucide-react';
 import { apiClient } from '../../utils/api';
 import { HelpButton } from '../common/HelpButton';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
@@ -52,6 +52,7 @@ interface PublicCatalogoProps {
 const heroBackground = 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=1400&q=80';
 
 export function PublicCatalogo({ onRegistroClick, onLoginClick }: PublicCatalogoProps) {
+  const catalogoRef = useRef<HTMLElement | null>(null);
   const [libros, setLibros] = useState<Libro[]>([]);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [busqueda, setBusqueda] = useState('');
@@ -144,6 +145,14 @@ export function PublicCatalogo({ onRegistroClick, onLoginClick }: PublicCatalogo
     setMostrarDetalles(true);
   };
 
+  const scrollToCatalogo = () => {
+    const target = catalogoRef.current || document.getElementById('catalogo-publico');
+    if (!target) return;
+
+    const offsetTop = target.getBoundingClientRect().top + window.scrollY - 88;
+    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Header/Navbar */}
@@ -197,7 +206,6 @@ export function PublicCatalogo({ onRegistroClick, onLoginClick }: PublicCatalogo
               <p className="mt-4 text-lg text-blue-50 max-w-2xl">
                 Descubre, reserva y gestiona tus libros favoritos en línea. Inicia sesión o crea tu cuenta gratuita para explorar el catálogo completo y comenzar a leer.
               </p>
-              <div className="mt-8" />
             </div>
 
             <div className="hidden md:block">
@@ -212,9 +220,198 @@ export function PublicCatalogo({ onRegistroClick, onLoginClick }: PublicCatalogo
             </div>
           </div>
         </div>
+
+        <div className="absolute inset-0 z-30 flex items-center justify-center px-4">
+          <Button
+            type="button"
+            onClick={scrollToCatalogo}
+            className="gap-2 bg-white text-blue-700 shadow-xl hover:bg-blue-50"
+          >
+            Explora nuestro catálogo
+            <ChevronDown className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
 
-      {/* Contenido principal removido del banner (no se muestra catálogo aquí) */}
+      {/* Catálogo público */}
+      <main id="catalogo-publico" ref={catalogoRef} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6 scroll-mt-24">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-16 sm:mt-20">
+          <Card>
+            <CardContent className="p-5 flex items-center gap-4">
+              <div className="h-12 w-12 rounded-lg bg-blue-50 flex items-center justify-center">
+                <BookOpen className="h-6 w-6 text-blue-600" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Libros</p>
+                <p className="text-2xl font-semibold">{totalLibros}</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-5 flex items-center gap-4">
+              <div className="h-12 w-12 rounded-lg bg-green-50 flex items-center justify-center">
+                <BookMarked className="h-6 w-6 text-green-600" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Disponibles</p>
+                <p className="text-2xl font-semibold">{librosDisponibles}</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-5 flex items-center gap-4">
+              <div className="h-12 w-12 rounded-lg bg-slate-100 flex items-center justify-center">
+                <Filter className="h-6 w-6 text-slate-700" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Categorías</p>
+                <p className="text-2xl font-semibold">{totalCategorias}</p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Library className="h-5 w-5 text-blue-600" />
+              Catálogo público
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-[1fr_220px_220px] gap-4">
+              <div className="relative">
+                <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                <Input
+                  placeholder="Buscar por título, autor o ISBN..."
+                  value={busqueda}
+                  onChange={(e) => setBusqueda(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+
+              <Select value={categoriaFiltro} onValueChange={setCategoriaFiltro}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Categoría" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="todas">Todas las categorías</SelectItem>
+                  {categorias.map((categoria) => (
+                    <SelectItem key={categoria.id} value={categoria.id}>
+                      {categoria.nombre}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Select value={disponibilidadFiltro} onValueChange={setDisponibilidadFiltro}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Disponibilidad" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="todas">Todos los estados</SelectItem>
+                  <SelectItem value="disponible">Disponibles</SelectItem>
+                  <SelectItem value="no-disponible">No disponibles</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {loading ? (
+              <div className="py-16 text-center text-gray-500">
+                Cargando catálogo...
+              </div>
+            ) : librosFiltrados.length === 0 ? (
+              <div className="rounded-lg border border-dashed p-10 text-center">
+                <AlertCircle className="mx-auto h-10 w-10 text-gray-400" />
+                <p className="mt-3 font-medium">No se encontraron libros</p>
+                <p className="text-sm text-gray-500">
+                  Ajusta la búsqueda o cambia los filtros para ver más resultados.
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                {librosFiltrados.map((libro) => {
+                  const estaDisponible = libro.copias_disponibles > 0;
+
+                  return (
+                    <Card key={libro.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                      <div className="h-52 bg-blue-50 flex items-center justify-center">
+                        {libro.imagen_portada ? (
+                          <ImageWithFallback
+                            src={libro.imagen_portada}
+                            alt={libro.titulo}
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <BookOpen className="h-20 w-20 text-blue-300" />
+                        )}
+                      </div>
+
+                      <CardContent className="p-5 space-y-4">
+                        <div className="min-h-[72px]">
+                          <h3 className="font-semibold line-clamp-2">{libro.titulo}</h3>
+                          <p className="text-sm text-gray-600 mt-1">{libro.autor}</p>
+                        </div>
+
+                        <div className="space-y-2 text-sm">
+                          <div className="flex items-center justify-between gap-3">
+                            <span className="text-gray-500">Categoría</span>
+                            <span className="text-right">{libro.categoria?.nombre || 'Sin categoría'}</span>
+                          </div>
+                          <div className="flex items-center justify-between gap-3">
+                            <span className="text-gray-500">ISBN</span>
+                            <span className="font-mono text-xs text-right">{libro.isbn}</span>
+                          </div>
+                          <div className="flex items-center justify-between gap-3">
+                            <span className="text-gray-500">Copias</span>
+                            <span>
+                              {libro.copias_disponibles}/{libro.copias_totales || libro.copias_disponibles}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                          <Badge
+                            style={{
+                              backgroundColor: estaDisponible ? '#28A745' : '#DC3545',
+                              color: 'white',
+                              borderColor: 'transparent'
+                            }}
+                          >
+                            {estaDisponible ? 'Disponible' : 'No disponible'}
+                          </Badge>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          <Button
+                            variant="outline"
+                            onClick={() => handleVerDetalles(libro)}
+                            className="gap-2"
+                          >
+                            <Eye className="h-4 w-4" />
+                            Ver detalles
+                          </Button>
+                          <Button
+                            onClick={() => handleSolicitarPrestamo(libro)}
+                            disabled={!estaDisponible}
+                            className="gap-2 text-white"
+                            style={{ backgroundColor: estaDisponible ? '#007BFF' : undefined }}
+                          >
+                            <Lock className="h-4 w-4" />
+                            Solicitar
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </main>
 
       {/* Footer */}
       <footer className="bg-gray-800 text-white">
