@@ -6,7 +6,7 @@ Sistema web para gestion de biblioteca con roles de administrador y cliente. El 
 
 - Catalogo publico de libros.
 - Registro e inicio de sesion.
-- Panel de administrador para gestionar libros, categorias, usuarios, prestamos y multas.
+- Panel de administrador para gestionar libros, logs de auditorias, categorias, usuarios, prestamos y multas.
 - Panel de cliente para consultar catalogo, prestamos propios y multas propias.
 - Reportes, estadisticas y logs de auditoria para acciones relevantes.
 - Borrado logico y rehabilitacion de registros principales.
