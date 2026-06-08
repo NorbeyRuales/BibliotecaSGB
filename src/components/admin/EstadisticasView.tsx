@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import { apiClient } from '../../utils/api';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { AlertCircle, TrendingUp } from 'lucide-react';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 export const EstadisticasView: React.FC = () => {
   const { token } = useAuth();

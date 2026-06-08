@@ -3,7 +3,7 @@ import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Info, UserCog, Database, CheckCircle, Copy, ExternalLink } from 'lucide-react';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 export const SetupGuide: React.FC = () => {
   const [copied, setCopied] = useState(false);

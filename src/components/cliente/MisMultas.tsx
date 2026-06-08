@@ -7,7 +7,7 @@ import { useAuth } from '../../context/AuthContext';
 import { apiClient } from '../../utils/api';
 import { QuickHelpLink } from '../common/QuickHelpLink';
 import { AlertCircle, DollarSign, CheckCircle } from 'lucide-react';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 export const MisMultas: React.FC = () => {
   const { token } = useAuth();

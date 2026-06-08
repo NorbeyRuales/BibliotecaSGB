@@ -12,7 +12,7 @@ import { apiClient } from '../../utils/api';
 import { useAuditoria } from '../../hooks/useAuditoria';
 import { MODULOS, ACCIONES } from '../../utils/auditoria';
 import { RotateCcw, Plus } from 'lucide-react';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 export const UsuarioManagement: React.FC = () => {
   const { token } = useAuth();

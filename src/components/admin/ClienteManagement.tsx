@@ -9,7 +9,7 @@ import { Badge } from '../ui/badge';
 import { useAuth } from '../../context/AuthContext';
 import { apiClient } from '../../utils/api';
 import { RotateCcw } from 'lucide-react';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 export const ClienteManagement: React.FC = () => {
   const { token } = useAuth();

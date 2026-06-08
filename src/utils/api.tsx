@@ -742,25 +742,28 @@ export const apiClient = {
         
         return data;
       } catch (parseError) {
+        const errorMessage = parseError instanceof Error ? parseError.message : String(parseError);
         console.error('❌ [API GET] Error al parsear JSON:', parseError);
         console.error('🔍 [API GET] Contenido que falló al parsear:', responseText);
         return { 
           success: false, 
-          error: `Error al parsear respuesta JSON: ${parseError.message}`,
+          error: `Error al parsear respuesta JSON: ${errorMessage}`,
           debug: {
-            parseError: parseError.message,
+            parseError: errorMessage,
             responseText: responseText.substring(0, 500)
           }
         };
       }
     } catch (error) {
+      const errorName = error instanceof Error ? error.name : 'UnknownError';
+      const errorMessage = error instanceof Error ? error.message : String(error);
       console.error('💥 [API GET] Error general en fetch:', error);
       return { 
         success: false, 
-        error: `Error de red o servidor: ${error.message}`,
+        error: `Error de red o servidor: ${errorMessage}`,
         debug: {
-          errorType: error.name,
-          errorMessage: error.message
+          errorType: errorName,
+          errorMessage
         }
       };
     }

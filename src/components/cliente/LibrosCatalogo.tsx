@@ -11,7 +11,7 @@ import { ReciboModal } from '../common/ReciboModal';
 import { QuickHelpLink } from '../common/QuickHelpLink';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { Search, BookOpen, AlertCircle, CheckCircle } from 'lucide-react';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 export const LibrosCatalogo: React.FC = () => {
   const { token, user } = useAuth();

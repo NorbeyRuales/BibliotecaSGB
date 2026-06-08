@@ -9,7 +9,7 @@ import { Badge } from '../ui/badge';
 import { useAuth } from '../../context/AuthContext';
 import { apiClient } from '../../utils/api';
 import { FileDown, FileText, Calendar } from 'lucide-react';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 import * as XLSX from 'xlsx';
 
 export const ReportesView: React.FC = () => {

@@ -30,6 +30,7 @@ export function QuickHelpLink({
   size = 'sm'
 }: QuickHelpLinkProps) {
   const [helpOpen, setHelpOpen] = useState(false);
+  const buttonSize = size === 'md' ? 'default' : size;
 
   const handleOpenHelp = () => {
     setHelpOpen(true);
@@ -66,7 +67,7 @@ export function QuickHelpLink({
       <Button
         onClick={handleOpenHelp}
         variant="outline"
-        size={size}
+        size={buttonSize}
         className="gap-1"
       >
         <HelpCircle className={size === 'sm' ? 'w-3.5 h-3.5' : 'w-4 h-4'} />

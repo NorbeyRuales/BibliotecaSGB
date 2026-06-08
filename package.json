@@ -53,11 +53,14 @@
             "xlsx": "*"
       },
       "devDependencies": {
-                  "@types/node": "^20.10.0",
-                  "@vitejs/plugin-react-swc": "^3.10.2",
-                  "puppeteer": "^24.42.0",
-                  "vite": "6.3.5",
-                  "tsx": "^4.22.3"
+            "@types/node": "^20.10.0",
+            "@types/react": "^19.2.17",
+            "@types/react-dom": "^19.2.3",
+            "@vitejs/plugin-react-swc": "^3.10.2",
+            "puppeteer": "^24.42.0",
+            "tsx": "^4.22.3",
+            "typescript": "^6.0.3",
+            "vite": "6.3.5"
       },
       "scripts": {
             "dev": "vite",

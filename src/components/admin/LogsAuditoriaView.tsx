@@ -30,7 +30,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
 import * as XLSX from 'xlsx';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 import { 
   listarLogs, 
   obtenerEstadisticasLogs,

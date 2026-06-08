@@ -14,7 +14,7 @@ import { apiClient } from '../../utils/api';
 import { useAuditoria } from '../../hooks/useAuditoria';
 import { MODULOS, ACCIONES } from '../../utils/auditoria';
 import { Check, ChevronsUpDown } from 'lucide-react';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 import { cn } from '../ui/utils';
 
 export const MultaManagement: React.FC = () => {

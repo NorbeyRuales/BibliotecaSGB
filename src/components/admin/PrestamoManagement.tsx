@@ -14,7 +14,7 @@ import { useAuditoria } from '../../hooks/useAuditoria';
 import { MODULOS, ACCIONES } from '../../utils/auditoria';
 import { ReciboModal } from '../common/ReciboModal';
 import { FileText, Check, ChevronsUpDown } from 'lucide-react';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 import { cn } from '../ui/utils';
 
 export const PrestamoManagement: React.FC = () => {
