@@ -89,4 +89,5 @@ El proyecto debe configurarse con variables de entorno. No subir valores reales 
 ## Base de datos
 
 Para una instalacion nueva, ejecuta los scripts SQL desde el SQL Editor de Supabase
+no exponer variables de entorno
 
